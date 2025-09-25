@@ -35,38 +35,42 @@ class Carrito {
         }
     }
 
-    fun mostrarCarrito() {
-        if (productosEnCarrito.isEmpty()) {
-            println("\n🛒 El carrito está vacío.")
-            return
-        }
-
-        val tasaImpuesto = 0.15 // Se agrega el 15% de IVA
-        var total = 0.0
-
-        println("\n🛍️ Carrito de Compras")
-        println("=".repeat(60))
-        println("Producto".padEnd(20) + "Cantidad".padEnd(10) + "Precio U.".padEnd(12) + "Subtotal")
-        println("-".repeat(60))
-
-        productosEnCarrito.forEach { (nombre, cantidad) ->
-            val producto = productosDisponibles.find { it.nombre.equals(nombre, ignoreCase = true) }
-            val precioUnitario = producto?.precio ?: 0.0
-            val subtotal = precioUnitario * cantidad
-            total += subtotal
-
-            println("${nombre.padEnd(20)} ${cantidad.toString().padEnd(10)} ${"$${precioUnitario}".padEnd(12)} $${"%.2f".format(subtotal)}")
-        }
-
-        val impuesto = total * tasaImpuesto
-        val totalConImpuesto = total + impuesto
-
-        println("-".repeat(60))
-        println("Subtotal:".padEnd(45) + "$${"%.2f".format(total)}")
-        println("Impuesto (15%):".padEnd(45) + "$${"%.2f".format(impuesto)}")
-        println("TOTAL A PAGAR:".padEnd(45) + "$${"%.2f".format(totalConImpuesto)}")
-        println("=".repeat(60))
+   fun mostrarCarrito() {
+    if (productosEnCarrito.isEmpty()) {
+        println("\n🛒 El carrito está vacío.")
+        return
     }
+
+    val tasaImpuesto = 0.15 // IVA 15%
+    var subtotalGeneral = 0.0
+
+    println("\n🛍️ Carrito de Compras")
+    println("=".repeat(60))
+    println("%-20s %-10s %-12s %s".format("Producto", "Cantidad", "Precio U.", "Subtotal"))
+    println("-".repeat(60))
+
+    productosEnCarrito.forEach { (nombre, cantidad) ->
+        val producto = productosDisponibles.find { it.nombre.equals(nombre, ignoreCase = true) }
+        val precioUnitario = producto?.precio ?: 0.0
+        val subtotal = precioUnitario * cantidad
+        subtotalGeneral += subtotal
+
+        println("%-20s %-10d %-12s $%.2f".format(
+            nombre,
+            cantidad,
+            "$${"%.2f".format(precioUnitario)}",
+            subtotal
+        ))
+    }
+
+    val impuestos = subtotalGeneral * tasaImpuesto
+    val totalConImpuestos = subtotalGeneral + impuestos
+
+    println("-".repeat(60))
+    println("%-44s $%.2f".format("Subtotal:", subtotalGeneral))
+    println("%-44s $%.2f".format("IVA (15%):", impuestos))
+    println("%-44s $%.2f".format("TOTAL:", totalConImpuestos))
+}
 
 
     fun generarFactura() {
